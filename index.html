@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Place Value Move</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f8ff;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #444;
+    }
+    .blocks {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .block {
+      width: 60px;
+      height: 60px;
+      background-color: #ffd966;
+      border: 2px solid #444;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+    }
+    .grid {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .drop-zone {
+      width: 120px;
+      height: 150px;
+      background-color: #fff;
+      border: 2px dashed #888;
+      border-radius: 8px;
+      padding-top: 10px;
+      font-weight: bold;
+    }
+    .drop-zone p {
+      margin: 5px;
+      font-size: 16px;
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #4caf50;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Place Value Move</h1>
+  <div class="blocks">
+    <div class="block" draggable="true" data-value="1000">1000</div>
+    <div class="block" draggable="true" data-value="100">100</div>
+    <div class="block" draggable="true" data-value="10">10</div>
+    <div class="block" draggable="true" data-value="1">1</div>
+  </div>
+
+  <div class="grid">
+    <div class="drop-zone" data-place="1000"><p>Thousands</p></div>
+    <div class="drop-zone" data-place="100"><p>Hundreds</p></div>
+    <div class="drop-zone" data-place="10"><p>Tens</p></div>
+    <div class="drop-zone" data-place="1"><p>Ones</p></div>
+  </div>
+
+  <button onclick="clearBlocks()">Clear</button>
+
+  <script>
+    const blocks = document.querySelectorAll('.block');
+    const zones = document.querySelectorAll('.drop-zone');
+
+    blocks.forEach(block => {
+      block.addEventListener('dragstart', dragStart);
+    });
+
+    zones.forEach(zone => {
+      zone.addEventListener('dragover', dragOver);
+      zone.addEventListener('drop', drop);
+    });
+
+    function dragStart(e) {
+      e.dataTransfer.setData("text/html", e.target.outerHTML);
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      const html = e.dataTransfer.getData("text/html");
+      e.target.appendChild(document.createRange().createContextualFragment(html));
+    }
+
+    function clearBlocks() {
+      zones.forEach(zone => {
+        const place = zone.getAttribute("data-place");
+        let label = "";
+        if (place === "1000") label = "Thousands";
+        else if (place === "100") label = "Hundreds";
+        else if (place === "10") label = "Tens";
+        else if (place === "1") label = "Ones";
+        zone.innerHTML = `<p>${label}</p>`;
+      });
+    }
+  </script>
+</body>
+</html>
